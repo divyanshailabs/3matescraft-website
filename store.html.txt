@@ -1,0 +1,250 @@
+<!DOCTYPE html><html>
+<head>
+<title>Store - 3MatesCraft</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet"><style>
+body{
+margin:0;
+font-family:Poppins;
+background:#020617;
+color:white;
+text-align:center;
+}
+
+/* PARTICLES */
+canvas{
+position:fixed;
+top:0;
+left:0;
+z-index:-1;
+}
+
+/* NAV */
+.nav{
+position:fixed;
+width:100%;
+top:0;
+padding:20px;
+background:rgba(0,0,0,0.3);
+backdrop-filter:blur(10px);
+}
+
+.nav a{
+color:white;
+margin:0 15px;
+text-decoration:none;
+}
+
+/* CONTAINER */
+.container{
+margin-top:120px;
+}
+
+/* BALANCE */
+.balance{
+background:#0f172a;
+display:inline-block;
+padding:10px 20px;
+border-radius:10px;
+margin-bottom:20px;
+color:#22c55e;
+}
+
+/* CARD */
+.card{
+background:#0f172a;
+padding:25px;
+margin:15px auto;
+width:260px;
+border-radius:15px;
+transition:0.3s;
+}
+
+.card:hover{
+transform:translateY(-10px);
+box-shadow:0 0 20px #22c55e;
+}
+
+/* PRICE */
+.price{
+color:#22c55e;
+font-size:22px;
+margin:10px 0;
+}
+
+/* BUTTON */
+.btn{
+padding:10px 20px;
+background:#22c55e;
+border:none;
+border-radius:10px;
+cursor:pointer;
+}
+
+.btn:hover{
+box-shadow:0 0 15px #22c55e;
+}
+
+/* POPUP */
+.popup{
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+background:#0f172a;
+padding:25px;
+border-radius:15px;
+display:none;
+z-index:100;
+width:300px;
+}
+
+/* SUCCESS */
+.success{
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%) scale(0);
+background:#22c55e;
+color:black;
+padding:20px;
+border-radius:12px;
+font-weight:bold;
+transition:0.3s;
+z-index:200;
+}
+
+.success.show{
+transform:translate(-50%,-50%) scale(1);
+}
+
+/* HISTORY */
+.history{
+margin-top:30px;
+}
+
+.history-item{
+background:#0f172a;
+padding:10px;
+margin:10px auto;
+width:260px;
+border-radius:10px;
+}
+</style></head><body><canvas id="particles"></canvas>
+
+<div class="nav">
+<a href="index.html">Home</a>
+<a href="store.html">Store</a>
+<a href="staff.html">Staff</a>
+<a href="vote.html">Vote</a>
+</div><div class="container"><h1>🛒 Store</h1><div class="balance" id="balance">💎 Coins: 1000</div><h2>🎮 Ranks</h2><div class="card">
+<h3>VIP</h3>
+<div class="price">₹99</div>
+<button class="btn" onclick="buy('VIP',99)">Buy</button>
+</div><div class="card">
+<h3>MVP</h3>
+<div class="price">₹199</div>
+<button class="btn" onclick="buy('MVP',199)">Buy</button>
+</div><h2>💎 Coins</h2><div class="card">
+<h3>500 Coins</h3>
+<div class="price">₹49</div>
+<button class="btn" onclick="buyCoins(500)">Buy</button>
+</div><div class="card">
+<h3>1200 Coins</h3>
+<div class="price">₹99</div>
+<button class="btn" onclick="buyCoins(1200)">Buy</button>
+</div><!-- HISTORY --><div class="history">
+<h2>🧾 History</h2>
+<div id="historyList"></div>
+</div></div><!-- POPUP --><div class="popup" id="popup">
+<h3 id="itemName"></h3>
+<p id="itemPrice"></p><input type="text" placeholder="Minecraft Username" id="username"><button class="btn" onclick="confirmPurchase()">Confirm</button>
+<button class="btn" onclick="closePopup()">Cancel</button>
+
+</div><!-- SUCCESS --><div class="success" id="successBox">
+✅ Purchase Successful!
+</div><script>
+let currentItem="", currentPrice=0;
+let coins=1000;
+
+// BUY
+function buy(item,price){
+currentItem=item;
+currentPrice=price;
+document.getElementById("itemName").innerText=item;
+document.getElementById("itemPrice").innerText="₹"+price;
+document.getElementById("popup").style.display="block";
+}
+
+// BUY COINS
+function buyCoins(amount){
+coins+=amount;
+updateBalance();
+addHistory("Bought "+amount+" Coins 💎");
+showSuccess();
+}
+
+// CLOSE
+function closePopup(){
+document.getElementById("popup").style.display="none";
+}
+
+// CONFIRM
+function confirmPurchase(){
+let user=document.getElementById("username").value;
+if(user===""){
+alert("Enter username");
+return;
+}
+
+addHistory(user+" bought "+currentItem+" for ₹"+currentPrice);
+closePopup();
+showSuccess();
+}
+
+// SUCCESS
+function showSuccess(){
+let box=document.getElementById("successBox");
+box.classList.add("show");
+setTimeout(()=>box.classList.remove("show"),2000);
+}
+
+// HISTORY
+function addHistory(text){
+let list=document.getElementById("historyList");
+let div=document.createElement("div");
+div.className="history-item";
+div.innerText=text;
+list.prepend(div);
+}
+
+// BALANCE
+function updateBalance(){
+document.getElementById("balance").innerText="💎 Coins: "+coins;
+}
+
+// PARTICLES
+const canvas=document.getElementById("particles");
+const ctx=canvas.getContext("2d");
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+let particles=[];
+for(let i=0;i<100;i++){
+particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:2,speed:0.5});
+}
+
+function animate(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+particles.forEach(p=>{
+p.y+=p.speed;
+if(p.y>canvas.height)p.y=0;
+ctx.beginPath();
+ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+ctx.fillStyle="#22c55e";
+ctx.fill();
+});
+requestAnimationFrame(animate);
+}
+animate();
+</script></body>
+</html>

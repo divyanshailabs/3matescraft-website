@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<script type="module" src="auth.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apply - 3MatesCraft</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+margin:0;
+font-family:Poppins;
+background:#020617;
+color:white;
+}
+
+canvas{
+position:fixed;
+top:0;
+left:0;
+z-index:-1;
+}
+
+.nav{
+position:fixed;
+width:100%;
+top:0;
+display:flex;
+justify-content:center;
+align-items:center;
+padding:15px;
+background:rgba(0,0,0,0.4);
+backdrop-filter:blur(10px);
+z-index:1000;
+}
+
+.nav a{
+color:white;
+margin:0 15px;
+text-decoration:none;
+font-weight:700;
+position:relative;
+transition:0.3s;
+}
+
+.nav a:hover{
+color:#22c55e;
+text-shadow:0 0 10px #22c55e;
+}
+
+.nav a::after{
+content:"";
+position:absolute;
+width:0%;
+height:2px;
+left:0;
+bottom:-5px;
+background:#22c55e;
+transition:0.3s;
+}
+
+.nav a:hover::after{
+width:100%;
+}
+
+#logoutBtn{
+margin-left:20px;
+padding:6px 12px;
+background:#22c55e;
+border:none;
+border-radius:6px;
+cursor:pointer;
+color:black;
+font-weight:bold;
+}
+
+.container{
+margin-top:100px;
+padding:20px;
+text-align:center;
+}
+
+.section{
+max-width:700px;
+margin:20px auto;
+background:#0f172a;
+padding:20px;
+border-radius:15px;
+text-align:left;
+}
+
+.form{
+max-width:500px;
+margin:20px auto;
+background:#0f172a;
+padding:20px;
+border-radius:15px;
+}
+
+input, textarea, select{
+width:100%;
+margin:10px 0;
+padding:10px;
+border:none;
+border-radius:10px;
+background:#020617;
+color:white;
+}
+
+.form button{
+width:100%;
+padding:12px;
+border:none;
+border-radius:10px;
+background:#22c55e;
+color:black;
+font-weight:bold;
+cursor:pointer;
+}
+
+footer{
+text-align:center;
+color:gray;
+padding:20px;
+}
+</style>
+
+</head>
+
+<body>
+
+<!-- ✅ PARTICLES BACKGROUND (RESTORED EXACTLY) -->
+<canvas id="particles"></canvas>
+
+<div class="nav">
+<a href="index.html">Home</a>
+<a href="store.html">Store</a>
+<a href="staff.html">Staff</a>
+<a href="media.html">Media</a>
+<a href="vote.html">Vote</a>
+<a href="rules.html">Rules</a>
+<a href="about.html">About</a>
+<a href="events.html">Events</a>
+<a href="apply.html">Apply</a>
+
+<button id="logoutBtn" onclick="logout()" style="margin-left:20px;padding:6px 12px;background:#22c55e;border:none;border-radius:6px;cursor:pointer;color:black;">
+Logout
+</button>
+</div>
+
+<div class="container">
+
+<h1>🧑‍💻 Apply for Media or Staff</h1>
+
+<!-- STATUS SECTION (NOW PROPERLY USED) -->
+<div class="section" id="statusBox" style="display:none;">
+<h2>📊 Application Status</h2>
+<p id="statusText">Pending</p>
+</div>
+
+<div class="section">
+<h2>🎥 Media Requirements</h2>
+<p>• Minimum 1,000+ views on long format</p>
+<p>• Minimum 3,000+ views on short format</p>
+<p>• Good reputation of channel</p>
+</div>
+
+<div class="section">
+<h2>👑 Staff Requirements</h2>
+<p>• Must be 14+</p>
+<p>• Must be mature</p>
+<p>• Must have experience</p>
+</div>
+
+<div class="form">
+
+<select id="type" onchange="toggleMedia()">
+<option value="">Select Application Type</option>
+<option>Staff</option>
+<option>Media</option>
+</select>
+
+<input id="ign" placeholder="Minecraft IGN">
+<input id="discord" placeholder="Discord Username">
+<input id="age" type="number" placeholder="Age">
+<input id="exp" placeholder="Experience? (Yes/No)">
+<textarea id="expDetails" placeholder="Explain experience"></textarea>
+<input id="rulesCheck" placeholder="Read rules? (Yes/No)">
+<textarea id="reason" placeholder="Why do you want to join?"></textarea>
+<textarea id="activity" placeholder="How active are you daily?"></textarea>
+
+<div id="mediaFields" style="display:none;">
+<input id="youtube" placeholder="YouTube Name">
+<input id="instagram" placeholder="Instagram Name">
+</div>
+
+<button onclick="submitApp()">Submit Application</button>
+
+</div>
+
+</div>
+
+<footer>© 2026 3MatesCraft</footer>
+
+<script type="module">
+
+import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, query, where } 
+from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+apiKey:"AIzaSyAofirNVMReX1mrdGFXUaf4qxjjVU4mE4",
+authDomain:"matescraft-a441d.firebaseapp.com",
+projectId:"matescraft-a441d"
+};
+
+const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const mediaFields = document.getElementById("mediaFields");
+
+// TOGGLE
+window.toggleMedia = function(){
+let type=document.getElementById("type").value;
+mediaFields.style.display = (type==="Media") ? "block" : "none";
+}
+
+// STATUS CHECK (FIXED + WORKING)
+window.checkStatus = async function(){
+
+let ign = document.getElementById("ign").value;
+if(!ign) return;
+
+const q = query(collection(db,"applications"), where("ign","==",ign));
+const snap = await getDocs(q);
+
+let status = "Pending";
+
+if(!snap.empty){
+let data = snap.docs[0].data();
+
+if(data.status === "accepted") status = "Accepted";
+else if(data.status === "rejected") status = "Denied";
+else status = "Pending";
+}
+
+document.getElementById("statusBox").style.display = "block";
+document.getElementById("statusText").innerText = status;
+}
+
+// SUBMIT
+window.submitApp = async function(){
+
+let type = document.getElementById("type").value;
+let ign = document.getElementById("ign").value;
+let discord = document.getElementById("discord").value;
+let age = document.getElementById("age").value;
+let exp = document.getElementById("exp").value;
+let expDetails = document.getElementById("expDetails").value;
+let rules = document.getElementById("rulesCheck").value;
+let reason = document.getElementById("reason").value;
+let activity = document.getElementById("activity").value;
+let youtube = document.getElementById("youtube").value;
+let instagram = document.getElementById("instagram").value;
+
+if(!type || !ign || !discord){
+alert("Fill required fields!");
+return;
+}
+
+// SAVE
+await addDoc(collection(db,"applications"),{
+type, ign, discord, age, exp, expDetails,
+rules, reason, activity,
+youtube: youtube || "N/A",
+instagram: instagram || "N/A",
+status:"pending",
+time:Date.now()
+});
+
+// DISCORD WEBHOOK (UNCHANGED)
+await fetch("https://discord.com/api/webhooks/1498905191322488842/Lx_O_WwVDg0OtD39kqVqv_2IznvFiUcZJRR6VL8XHOebS5_gzWlVbvgEImY3MiL8ObqO",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+content:`📩 New Application\n<@1463462172624683055> <@946802418115555348> <@1345648253160525904>`,
+embeds:[{
+title:"📩 New Application",
+color:65280,
+fields:[
+{name:"Type",value:type},
+{name:"IGN",value:ign},
+{name:"Discord",value:discord},
+{name:"Age",value:age || "N/A"},
+{name:"Experience",value:exp || "N/A"},
+{name:"Experience Details",value:expDetails || "N/A"},
+{name:"Rules Read",value:rules || "N/A"},
+{name:"Reason",value:reason || "N/A"},
+{name:"Activity",value:activity || "N/A"},
+{name:"YouTube",value:youtube || "N/A"},
+{name:"Instagram",value:instagram || "N/A"}
+]
+}]
+})
+});
+
+alert("Application Submitted!");
+checkStatus();
+
+}
+
+// PARTICLES (RESTORED)
+const canvas = document.getElementById("particles");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+for(let i=0;i<100;i++){
+particles.push({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+r:2,
+speed:0.5
+});
+}
+
+function animate(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+particles.forEach(p=>{
+p.y += p.speed;
+if(p.y > canvas.height) p.y = 0;
+
+ctx.beginPath();
+ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+ctx.fillStyle="#22c55e";
+ctx.fill();
+});
+
+requestAnimationFrame(animate);
+}
+animate();
+
+</script>
+
+</body>
+</html>

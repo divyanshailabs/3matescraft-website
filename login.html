@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Login - 3MatesCraft</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  background: #111827;
+  padding: 30px;
+  border-radius: 15px;
+  width: 300px;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(0,255,150,0.3);
+}
+
+h1 {
+  margin-bottom: 20px;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 8px;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #22c55e;
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #16a34a;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+  <h1>🔐 Login</h1>
+
+  <input id="ign" type="text" placeholder="Minecraft Username (IGN)">
+  <input id="email" type="email" placeholder="Enter Email" required>
+  <input id="password" type="password" placeholder="Enter Password" required>
+
+<button onclick="login()">Login</button> <button onclick="signup()">Sign Up</button>
+
+</div>
+
+<script type="module">
+import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } 
+from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+import { getFirestore, doc, setDoc } 
+from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+// 🔥 FIREBASE CONFIG
+const firebaseConfig = {
+  apiKey: "AIzaSyAofirNVMReXq1mrdGFXUaf4qxjjVU4mE4",
+  authDomain: "matescraft-a441d.firebaseapp.com",
+  projectId: "matescraft-a441d",
+  storageBucket: "matescraft-a441d.firebasestorage.app",
+  messagingSenderId: "878330126314",
+  appId: "1:878330126314:web:278c942ab5a89dfc0a5c93"
+};
+
+// INIT (safe)
+const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// 🔐 ADMIN EMAILS
+const ADMINS = [
+  "3matescraft@gmail.com",
+  "admin2@gmail.com",
+  "admin3@gmail.com"
+];
+
+// INPUTS
+const ignInput = document.getElementById("ign");
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
+
+// 🔓 LOGIN
+window.login = async function () {
+  try {
+    const userCred = await signInWithEmailAndPassword(
+      auth,
+      emailInput.value,
+      passwordInput.value
+    );
+
+    const user = userCred.user;
+
+    // 🔥 ADMIN REDIRECT FIX
+    if (ADMINS.includes(user.email)) {
+      window.location.href = "admin.html";
+    } else {
+      window.location.href = "index.html";
+    }
+
+  } catch (err) {
+    alert("❌ " + err.message);
+  }
+};
+
+// 🆕 SIGNUP
+window.signup = async function () {
+  try {
+    if (!ignInput.value) {
+      alert("Enter IGN first!");
+      return;
+    }
+
+    const userCred = await createUserWithEmailAndPassword(
+      auth,
+      emailInput.value,
+      passwordInput.value
+    );
+
+    const user = userCred.user;
+
+    // SAVE PLAYER DATA
+    await setDoc(doc(db, "players", user.uid), {
+      ign: ignInput.value,
+      coins: 0
+    });
+
+    alert("🎉 Account created! Now login.");
+
+  } catch (err) {
+    alert("❌ " + err.message);
+  }
+};
+</script>
+
+</body>
+</html>

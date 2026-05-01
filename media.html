@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script type="module" src="auth.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Media - 3MatesCraft</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  font-family:Poppins;
+  background:#020617;
+  color:white;
+}
+
+/* PARTICLES */
+canvas{
+  position:fixed;
+  top:0;
+  left:0;
+  z-index:-1;
+}
+
+/* NAV */
+.nav{
+  position:fixed;
+  width:100%;
+  top:0;
+  display:flex;
+  justify-content:center;
+  padding:15px;
+  background:rgba(0,0,0,0.4);
+  backdrop-filter:blur(10px);
+}
+
+.nav a{
+  color:white;
+  margin:0 15px;
+  text-decoration:none;
+  font-weight:700; /* BOLD */
+  position:relative;
+  transition:0.3s;
+}
+
+/* Hover glow */
+.nav a:hover{
+  color:#22c55e;
+  text-shadow:0 0 10px #22c55e;
+}
+
+/* UNDERLINE ANIMATION */
+.nav a::after{
+  content:"";
+  position:absolute;
+  width:0%;
+  height:2px;
+  left:0;
+  bottom:-5px;
+  background:#22c55e;
+  transition:0.3s;
+}
+
+.nav a:hover::after{
+  width:100%;
+}
+.nav a:hover{
+  color:#22c55e;
+}
+
+/* CONTAINER */
+.container{
+  margin-top:100px;
+  text-align:center;
+  padding:20px;
+}
+
+/* ANIMATION */
+@keyframes riseFade{
+  from{opacity:0; transform:translateY(30px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+/* TITLE */
+h1{
+  opacity:0;
+  animation:riseFade 1s ease forwards;
+}
+
+.container p{
+  opacity:0;
+  animation:riseFade 1s ease forwards 0.2s;
+}
+
+/* CARDS */
+.cards{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:20px;
+}
+
+.card{
+  background:#0f172a;
+  padding:20px;
+  border-radius:15px;
+  width:300px;
+  transition:0.3s;
+  opacity:0;
+  animation:riseFade 1s ease forwards;
+}
+
+.card:nth-child(1){animation-delay:0.4s;}
+.card:nth-child(2){animation-delay:0.6s;}
+.card:nth-child(3){animation-delay:0.8s;}
+
+.card:hover{
+  transform:translateY(-10px);
+  box-shadow:0 0 20px #22c55e; /* ONLY ON HOVER = NO LAG */
+}
+
+/* BUTTON */
+.btn{
+  margin-top:10px;
+  padding:10px 20px;
+  border:none;
+  border-radius:10px;
+  background:#22c55e;
+  color:black;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.btn:hover{
+  box-shadow:0 0 15px #22c55e; /* ONLY ON HOVER */
+}
+</style>
+</head>
+
+<body>
+
+<!-- PARTICLES -->
+<canvas id="particles"></canvas>
+
+<!-- NAV -->
+<div class="nav">
+<a href="index.html">Home</a>
+<a href="store.html">Store</a>
+<a href="staff.html">Staff</a>
+<a href="media.html">Media</a>
+<a href="vote.html">Vote</a>
+<a href="rules.html">Rules</a>
+<a href="about.html">About</a>
+<a href="events.html">Events</a>
+<a href="apply.html">Apply</a>
+
+<button id="logoutBtn" onclick="logout()" style="margin-left:20px;padding:6px 12px;background:#22c55e;border:none;border-radius:6px;cursor:pointer;color:black;">
+Logout
+</button>
+</div>
+
+<div class="container">
+
+<h1>📸 Media</h1>
+<p>Check out our latest content!</p>
+
+<div class="cards">
+
+<!-- INSTAGRAM -->
+<div class="card">
+<h3>📸 Instagram</h3>
+<p>Check our latest post 🔥</p>
+
+<a href="https://www.instagram.com/3matescraft/" target="_blank">
+<button class="btn">View Post</button>
+</a>
+</div>
+
+<!-- YOUTUBE -->
+<div class="card">
+<h3>🎥 YouTube</h3>
+<p>Watch our latest video</p>
+
+<iframe width="100%" height="180"
+src="https://www.youtube.com/embed/YOUR_VIDEO_ID"
+frameborder="0" allowfullscreen></iframe>
+</div>
+
+<!-- DISCORD -->
+<div class="card">
+<h3>💬 Discord</h3>
+<p>Join our community</p>
+
+<a href="https://discord.gg/dUgbssDdC" target="_blank">
+<button class="btn">Join Now</button>
+</a>
+</div>
+
+</div>
+
+</div>
+
+<script>
+// PARTICLES (UNCHANGED)
+const canvas = document.getElementById("particles");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+for(let i = 0; i < 120; i++){
+  particles.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    r: 2,
+    speed: 0.5
+  });
+}
+
+function animate(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  particles.forEach(p => {
+    p.y += p.speed;
+
+    if(p.y > canvas.height){
+      p.y = 0;
+      p.x = Math.random() * canvas.width;
+    }
+
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle="#22c55e";
+    ctx.fill();
+  });
+
+  requestAnimationFrame(animate);
+}
+
+animate();
+
+window.addEventListener("resize", () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+</script>
+
+</body>
+</html>

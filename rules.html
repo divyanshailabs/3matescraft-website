@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script type="module" src="auth.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rules - 3MatesCraft</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  font-family:Poppins;
+  background:#020617;
+  color:white;
+  overflow-x:hidden;
+}
+
+/* PARTICLES */
+canvas{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  z-index:-1;
+  pointer-events:none;
+}
+
+/* NAV */
+.nav{
+  position:fixed;
+  width:100%;
+  top:0;
+  display:flex;
+  justify-content:center;
+  padding:15px;
+  backdrop-filter:blur(15px);
+  background:rgba(0,0,0,0.4);
+}
+
+.nav a{
+  color:white;
+  margin:0 15px;
+  text-decoration:none;
+  font-weight:600;
+  transition:0.3s;
+}
+
+.nav a{
+  color:white;
+  margin:0 15px;
+  text-decoration:none;
+  font-weight:700; /* BOLD */
+  position:relative;
+  transition:0.3s;
+}
+
+/* Hover glow */
+.nav a:hover{
+  color:#22c55e;
+  text-shadow:0 0 10px #22c55e;
+}
+
+/* UNDERLINE ANIMATION */
+.nav a::after{
+  content:"";
+  position:absolute;
+  width:0%;
+  height:2px;
+  left:0;
+  bottom:-5px;
+  background:#22c55e;
+  transition:0.3s;
+}
+
+.nav a:hover::after{
+  width:100%;
+}
+/* CONTAINER */
+.container{
+  margin-top:100px;
+  padding:20px;
+  text-align:center;
+}
+
+/* ANIMATION */
+@keyframes riseFade{
+  from{opacity:0; transform:translateY(30px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+h1{
+  opacity:0;
+  animation:riseFade 1s ease forwards;
+}
+
+/* SECTION */
+.section{
+  margin-top:40px;
+  opacity:0;
+  animation:riseFade 1s ease forwards;
+}
+
+.section:nth-child(2){animation-delay:0.2s;}
+.section:nth-child(3){animation-delay:0.4s;}
+
+.box{
+  background:rgba(15,23,42,0.7);
+  padding:25px;
+  border-radius:15px;
+  text-align:left;
+  max-width:700px;
+  margin:20px auto;
+  transition:0.3s;
+}
+
+.box:hover{
+  box-shadow:0 0 25px #22c55e;
+  transform:translateY(-5px);
+}
+
+/* RULES LIST */
+ul{
+  padding-left:20px;
+}
+
+li{
+  margin:8px 0;
+}
+
+/* WARNING */
+.warning{
+  margin-top:30px;
+  background:#0f172a;
+  padding:20px;
+  border-radius:15px;
+  color:#22c55e;
+  font-weight:600;
+}
+
+/* FOOTER */
+footer{
+  margin-top:50px;
+  text-align:center;
+  color:gray;
+  padding:20px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- PARTICLES -->
+<canvas id="particles"></canvas>
+
+<!-- NAV -->
+<div class="nav">
+<a href="index.html">Home</a>
+<a href="store.html">Store</a>
+<a href="staff.html">Staff</a>
+<a href="media.html">Media</a>
+<a href="vote.html">Vote</a>
+<a href="rules.html">Rules</a>
+<a href="about.html">About</a>
+<a href="events.html">Events</a>
+<a href="apply.html">Apply</a>
+
+
+<button onclick="logout()" style="margin-left:20px;padding:6px 12px;background:#22c55e;border:none;border-radius:6px;cursor:pointer;color:black;">
+Logout
+</button>
+</div>
+
+<!-- CONTENT -->
+<div class="container">
+
+<h1>📜 3MatesCraft – Official Rules</h1>
+
+<!-- GAMEPLAY -->
+<div class="section">
+<div class="box">
+<h2>🛡️ Gameplay Rules</h2>
+<ul>
+<li>No hacked clients</li>
+<li>No movement mods</li>
+<li>No inventory mods</li>
+<li>No health indicators</li>
+<li>No radar or minimap mods</li>
+<li>No freecam</li>
+<li>No ESP</li>
+<li>No auto / easy place mods</li>
+<li>No macros or scripts</li>
+<li>No auto clickers</li>
+<li>No mouse tweaks / scroll mods</li>
+<li>No crafting modifications</li>
+<li>No abusing bugs or glitches</li>
+<li>No attempting to duplicate items</li>
+<li>No duplicating items</li>
+<li>No IRL trading</li>
+<li>No invite reward systems</li>
+<li>No external gambling</li>
+<li>No Discord boost rewards for in-game benefits</li>
+<li>No cross-server trading</li>
+<li>No staff impersonation</li>
+<li>Maximum of 5 accounts per player</li>
+<li>No finding or using the world seed</li>
+<li>No spamming voice chat</li>
+<li>No griefing, raiding, or stealing — respect all builds and claims</li>
+<li>Report all bugs, glitches, and cheaters to staff</li>
+</ul>
+</div>
+</div>
+
+<!-- CHAT -->
+<div class="section">
+<div class="box">
+<h2>💬 Chat Rules</h2>
+<ul>
+<li>No spamming or encouraging others to spam</li>
+<li>No harassment or toxic behavior</li>
+<li>No advertising or promotion</li>
+<li>No discrimination or hate speech</li>
+<li>No threats of any kind</li>
+<li>No sharing others' private information</li>
+<li>No pretending to be staff members</li>
+<li>No ban evasion</li>
+<li>No low-effort or spammy forum posts</li>
+<li>Use common sense — just because something isn’t listed doesn’t mean it’s allowed</li>
+</ul>
+</div>
+</div>
+
+<!-- WARNING -->
+<div class="warning">
+⚠️ Failure to follow these rules may result in warnings, mutes, bans, or permanent removal.
+<br><br>
+Play fair, respect others, and enjoy your time on 3MatesCraft!
+</div>
+
+</div>
+
+<footer>
+© 2026 3MatesCraft
+</footer>
+
+<!-- PARTICLES SCRIPT -->
+<script>
+const canvas = document.getElementById("particles");
+const ctx = canvas.getContext("2d");
+
+let particles=[];
+let w,h;
+
+function resize(){
+  w=canvas.width=window.innerWidth;
+  h=canvas.height=window.innerHeight;
+}
+resize();
+window.addEventListener("resize",resize);
+
+for(let i=0;i<80;i++){
+particles.push({
+x:Math.random()*w,
+y:Math.random()*h,
+r:Math.random()*2+1,
+speed:Math.random()*0.5+0.2,
+o:Math.random()
+});
+}
+
+function animate(){
+ctx.clearRect(0,0,w,h);
+
+particles.forEach(p=>{
+p.y+=p.speed;
+if(p.y>h){p.y=0;p.x=Math.random()*w;}
+
+ctx.beginPath();
+ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+ctx.fillStyle=`rgba(34,197,94,${p.o})`;
+ctx.fill();
+});
+
+requestAnimationFrame(animate);
+}
+animate();
+</script>
+
+</body>
+</html>

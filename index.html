@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3MatesCraft</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+
+<style>
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  margin:0;
+  font-family:'Poppins', sans-serif;
+  background:url('https://media.discordapp.net/attachments/1463492074169962703/1496041299227181167/file_00000000174071faa45a945a4bdf901a.png?ex=69f59f88&is=69f44e08&hm=088f0b41cf707d007b1589df0fbd9b9156d24dc49efe7f86a9beedba7db3c72e&=&format=webp&quality=lossless&width=708&height=283') center/cover no-repeat fixed;
+  color:white;
+}
+
+/* ANIMATION */
+.fade-up{
+  opacity:0;
+  transform:translateY(40px);
+  animation:fadeUp 1s ease forwards;
+}
+
+.fade-up.delay1{animation-delay:0.2s;}
+.fade-up.delay2{animation-delay:0.4s;}
+.fade-up.delay3{animation-delay:0.6s;}
+
+@keyframes fadeUp{
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+/* NAV */
+.nav{
+  position:fixed;
+  width:100%;
+  top:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:15px;
+  background:rgba(0,0,0,0.4);
+  backdrop-filter:blur(10px);
+  z-index:1000;
+}
+
+.nav-links{
+  display:flex;
+  gap:20px;
+}
+
+.nav a{
+  color:white;
+  text-decoration:none;
+  font-weight:700;
+  position:relative;
+}
+
+.nav a:hover{
+  color:#22c55e;
+  text-shadow:0 0 10px #22c55e;
+}
+
+.nav a::after{
+  content:"";
+  position:absolute;
+  width:0%;
+  height:2px;
+  left:0;
+  bottom:-5px;
+  background:#22c55e;
+  transition:0.3s;
+}
+
+.nav a:hover::after{
+  width:100%;
+}
+
+/* HAMBURGER */
+.menu-icon{
+  display:none;
+  font-size:26px;
+  cursor:pointer;
+  position:absolute;
+  left:20px;
+}
+
+/* MOBILE */
+@media(max-width:768px){
+  .nav{
+    justify-content:flex-start;
+  }
+
+  .menu-icon{
+    display:block;
+  }
+
+  .nav-links{
+    position:absolute;
+    top:60px;
+    left:0;
+    width:100%;
+    background:rgba(0,0,0,0.9);
+    flex-direction:column;
+    display:none;
+    text-align:center;
+    padding:20px 0;
+  }
+
+  .nav-links.active{
+    display:flex;
+  }
+}
+
+/* HERO */
+.hero{
+  height:100vh;
+  position:relative;
+}
+
+.center{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  text-align:center;
+}
+
+.logo{
+  width:90px;
+  filter:drop-shadow(0 0 10px #22c55e);
+}
+
+@media(max-width:768px){
+  .logo{
+    width:70px;
+  }
+}
+
+.ip{
+  margin-top:10px;
+  color:#22c55e;
+}
+
+/* SERVER SECTION */
+.server-section{
+  padding:60px 20px;
+  text-align:center;
+}
+
+#server-status{
+  font-size:20px;
+  animation:pulse 2s infinite;
+}
+
+.online{color:#22c55e;}
+.offline{color:#ef4444;}
+
+@keyframes pulse{
+  0%{text-shadow:0 0 5px currentColor;}
+  50%{text-shadow:0 0 25px currentColor;}
+  100%{text-shadow:0 0 5px currentColor;}
+}
+
+#ping{color:lightgray;}
+
+.player-names{display:none;margin-top:10px;}
+.player-list:hover .player-names{display:block;}
+
+/* BUTTONS */
+.btn{
+  margin-top:15px;
+  padding:10px 20px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:600;
+}
+
+.join{
+  background:#22c55e;
+  color:black;
+}
+
+.join:hover{
+  background:#16a34a;
+  box-shadow:0 0 15px #22c55e;
+}
+
+.discord{
+  background:#5865F2;
+  color:white;
+}
+
+.join.clicked{
+  transform:scale(0.95);
+  box-shadow:0 0 20px #22c55e;
+}
+
+/* SECTION */
+.section{
+  padding:60px 20px;
+  text-align:center;
+}
+
+.cards{
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:20px;
+}
+
+.card{
+  background:rgba(15,23,42,0.6);
+  padding:20px;
+  border-radius:15px;
+  width:250px;
+  transition:0.3s;
+}
+
+.card:hover{
+  transform:translateY(-10px);
+  box-shadow:0 0 25px #22c55e;
+}
+
+.price{
+  color:#22c55e;
+}
+
+footer{
+  text-align:center;
+  padding:20px;
+  color:gray;
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAV -->
+<div class="nav fade-up">
+  <div class="menu-icon" onclick="toggleMenu()">☰</div>
+
+  <div class="nav-links" id="navLinks">
+    <a href="index.html">Home</a>
+    <a href="store.html">Store</a>
+    <a href="staff.html">Staff</a>
+    <a href="media.html">Media</a>
+    <a href="vote.html">Vote</a>
+    <a href="rules.html">Rules</a>
+    <a href="about.html">About</a>
+    <a href="events.html">Events</a>
+    <a href="apply.html">Apply</a>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="center">
+    <img src="https://media.discordapp.net/attachments/1463492074169962703/1496041298803818557/Picsart_26-04-21_11-14-47-993.png?ex=69f59f88&is=69f44e08&hm=3ecef5509910cfcc35460873f59254214ee0a3507c02b437953c61d11fa0afe2&=&format=webp&quality=lossless&width=130&height=110"logo fade-up">
+
+    <div class="ip fade-up delay1">play.3matescraft.in</div>
+
+    <button class="btn join fade-up delay2" onclick="joinServer(this)">Join Server</button>
+    <button class="btn discord fade-up delay3" onclick="joinDiscord()">Discord</button>
+  </div>
+</div>
+
+<!-- SERVER STATUS -->
+<div class="server-section fade-up">
+<h2>🟢 Server Status</h2>
+
+<div id="server-status">Checking...</div>
+<div id="ping"></div>
+
+<div class="player-list">
+👥 View Players
+<div class="player-names" id="players"></div>
+</div>
+</div>
+
+<!-- STORE -->
+<div class="section fade-up">
+<h2>🛒 Popular Store Items</h2>
+
+<div class="cards">
+<div class="card"><h3>VIP Rank</h3><p>Fly + perks</p><div class="price">₹849</div></div>
+<div class="card"><h3>MATES+ Rank</h3><p>Better perks</p><div class="price">₹1049</div></div>
+<div class="card"><h3>Coins</h3><p>In-game currency</p><div class="price">₹55</div></div>
+</div>
+</div>
+
+<footer class="fade-up">
+© 2026 3MatesCraft | Not affiliated with Mojang
+</footer>
+
+<script>
+function toggleMenu(){
+  document.getElementById("navLinks").classList.toggle("active");
+}
+
+function joinServer(btn){
+  const ip="play.3matescraft.in";
+
+  navigator.clipboard.writeText(ip).then(()=>{
+    const original=btn.innerText;
+    btn.innerText="Copied!";
+    btn.classList.add("clicked");
+
+    setTimeout(()=>{
+      btn.innerText=original;
+      btn.classList.remove("clicked");
+    },1500);
+
+    window.location.href="minecraft://?addExternalServer=3MatesCraft|"+ip;
+  });
+}
+
+function joinDiscord(){
+  window.open("https://discord.gg/wjjaAPpJ");
+}
+
+async function getServerStatus(){
+  const s=document.getElementById("server-status");
+  const p=document.getElementById("ping");
+  const list=document.getElementById("players");
+
+  try{
+    const res=await fetch("https://api.mcsrvstat.us/2/play.3matescraft.in");
+    const data=await res.json();
+
+    if(data.online){
+      s.className="online";
+      s.innerHTML="🟢 Online — "+data.players.online+" players";
+      p.innerHTML="Ping: "+data.debug.ping+"ms";
+
+      if(data.players && data.players.list){
+        list.innerHTML=data.players.list.join(", ");
+      }else{
+        list.innerHTML="Hidden";
+      }
+
+    }else{
+      s.className="offline";
+      s.innerHTML="🔴 Offline";
+      p.innerHTML="";
+      list.innerHTML="";
+    }
+  }catch{
+    s.className="offline";
+    s.innerHTML="⚠️ Error";
+  }
+}
+
+getServerStatus();
+setInterval(getServerStatus,10000);
+</script>
+
+</body>
+</html>

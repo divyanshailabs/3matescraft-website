@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<script type="module" src="auth.js"></script>
+
+<title>Store - 3MatesCraft</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+margin:0;
+font-family:Poppins;
+background:#020617;
+color:white;
+text-align:center;
+}
+
+canvas{
+position:fixed;
+top:0;
+left:0;
+z-index:-1;
+}
+
+.nav{
+position:fixed;
+width:100%;
+top:0;
+padding:15px;
+background:rgba(0,0,0,0.3);
+backdrop-filter:blur(10px);
+display:flex;
+justify-content:center;
+align-items:center;
+gap:10px;
+}
+
+.nav a{
+  color:white;
+  margin:0 15px;
+  text-decoration:none;
+  font-weight:700;
+  position:relative;
+  transition:0.3s;
+}
+
+/* Hover glow */
+.nav a:hover{
+  color:#22c55e;
+  text-shadow:0 0 10px #22c55e;
+}
+
+/* UNDERLINE ANIMATION */
+.nav a::after{
+  content:"";
+  position:absolute;
+  width:0%;
+  height:2px;
+  left:0;
+  bottom:-5px;
+  background:#22c55e;
+  transition:0.3s;
+}
+
+.nav a:hover::after{
+  width:100%;
+}
+
+
+.logout-btn{
+position:absolute;
+right:20px;
+padding:6px 12px;
+background:#22c55e;
+border:none;
+border-radius:6px;
+cursor:pointer;
+color:black;
+font-size:12px;
+}
+
+.container{
+margin-top:120px;
+}
+
+.card{
+background:#0f172a;
+padding:25px;
+margin:15px auto;
+width:260px;
+border-radius:15px;
+transition:0.3s;
+}
+
+.card:hover{
+transform:translateY(-10px);
+box-shadow:0 0 20px #22c55e;
+}
+
+.price{
+color:#22c55e;
+font-size:22px;
+margin:10px 0;
+}
+
+.btn{
+padding:10px 20px;
+background:#22c55e;
+border:none;
+border-radius:10px;
+cursor:pointer;
+margin-top:10px;
+}
+
+.popup{
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+background:#0f172a;
+padding:25px;
+border-radius:15px;
+display:none;
+z-index:100;
+width:300px;
+}
+
+#qrSection{
+margin-top:15px;
+display:none;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="particles"></canvas>
+
+<div class="nav">
+<a href="index.html">Home</a>
+<a href="store.html">Store</a>
+<a href="staff.html">Staff</a>
+<a href="media.html">Media</a>
+<a href="vote.html">Vote</a>
+<a href="rules.html">Rules</a>
+<a href="about.html">About</a>
+<a href="events.html">Events</a>
+<a href="apply.html">Apply</a>
+<button id="logoutBtn" onclick="logout()" style="margin-left:20px;padding:6px 12px;background:#22c55e;border:none;border-radius:6px;cursor:pointer;color:black;">
+Logout
+</button>
+</div>
+
+<div class="container">
+
+<h1>🛒 Store</h1>
+
+<h2>🎮 Ranks</h2>
+
+<div class="card"><h3>MATES+</h3><div class="price">₹1049</div><button class="btn" onclick="buy('MATES+',1049)">Buy</button></div>
+<div class="card"><h3>VIP</h3><div class="price">₹849</div><button class="btn" onclick="buy('VIP',849)">Buy</button></div>
+<div class="card"><h3>LEGEND</h3><div class="price">₹649</div><button class="btn" onclick="buy('LEGEND',649)">Buy</button></div>
+<div class="card"><h3>WARRIOR</h3><div class="price">₹449</div><button class="btn" onclick="buy('WARRIOR',449)">Buy</button></div>
+<div class="card"><h3>HERO</h3><div class="price">₹249</div><button class="btn" onclick="buy('HERO',249)">Buy</button></div>
+
+<h2>💎 Coins</h2>
+
+<div class="card"><h3>10000 Coins</h3><div class="price">₹2000</div><button class="btn" onclick="buyCoins(10000)">Buy</button></div>
+<div class="card"><h3>5000 Coins</h3><div class="price">₹1000</div><button class="btn" onclick="buyCoins(5000)">Buy</button></div>
+<div class="card"><h3>2500 Coins</h3><div class="price">₹500</div><button class="btn" onclick="buyCoins(2500)">Buy</button></div>
+<div class="card"><h3>1000 Coins</h3><div class="price">₹200</div><button class="btn" onclick="buyCoins(1000)">Buy</button></div>
+<div class="card"><h3>500 Coins</h3><div class="price">₹100</div><button class="btn" onclick="buyCoins(500)">Buy</button></div>
+<div class="card"><h3>250 Coins</h3><div class="price">₹55</div><button class="btn" onclick="buyCoins(250)">Buy</button></div>
+
+</div>
+
+<!-- POPUP -->
+<div class="popup" id="popup">
+<h3 id="itemName"></h3>
+<p id="itemPrice"></p>
+
+<input type="text" placeholder="Minecraft IGN" id="ign">
+<input type="text" placeholder="Transaction ID (TXN)" id="txn">
+<input type="text" placeholder="Account Holder Name" id="payer">
+
+<div id="qrSection">
+<p>Scan & Pay</p>
+<img id="qrImage" style="width:200px;">
+</div>
+
+<!-- BUTTONS AT BOTTOM -->
+<button class="btn" onclick="showQR()">Pay</button>
+<button class="btn" onclick="sendPayment()">I Have Paid</button>
+<button class="btn" onclick="closePopup()">Cancel</button>
+
+</div>
+
+<script>
+let currentItem="", currentPrice=0;
+
+function buy(item,price){
+currentItem=item;
+currentPrice=price;
+document.getElementById("itemName").innerText=item;
+document.getElementById("itemPrice").innerText="₹"+price;
+document.getElementById("popup").style.display="block";
+}
+
+function buyCoins(amount){
+let priceMap={
+10000:2000,
+5000:1000,
+2500:500,
+1000:200,
+500:100,
+250:55
+};
+buy(amount+" Coins",priceMap[amount]);
+}
+
+function closePopup(){
+document.getElementById("popup").style.display="none";
+document.getElementById("qrSection").style.display="none";
+}
+
+// SHOW QR
+function showQR(){
+let qrImageURL="https://cdn.discordapp.com/attachments/1463492074169962703/1499339432590053426/IMG_20260430_144925.jpg?ex=69f47029&is=69f31ea9&hm=1e84f5f24beb7c5de1ee948167e7f5a1a29e970ce64df461e16e993788c79de8";
+document.getElementById("qrImage").src=qrImageURL;
+document.getElementById("qrSection").style.display="block";
+}
+
+// SEND TO DISCORD ONLY WHEN USER CLICKS THIS
+async function sendPayment(){
+
+let ign=document.getElementById("ign").value;
+let txn=document.getElementById("txn").value;
+let payer=document.getElementById("payer").value;
+
+if(ign==="" || txn==="" || payer===""){
+alert("Fill all details");
+return;
+}
+
+await fetch("https://discord.com/api/webhooks/1498008150027010220/oy4ETvsApUeCYl1HQBU0oPjhJCAdCtlu4MNQFTe2v7LwU7lnVMy3QFcMFlnW6GyWwUjO",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+content:`<@1345648253160525904> <@946802418115555348> <@1463462172624683055>
+
+💰 Payment Submitted
+IGN: ${ign}
+TXN: ${txn}
+Name: ${payer}
+Item: ${currentItem}
+Price: ₹${currentPrice}`
+})
+});
+
+alert("Payment submitted! Wait for admin confirmation.");
+closePopup();
+}
+
+// PARTICLES
+const canvas=document.getElementById("particles");
+const ctx=canvas.getContext("2d");
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+let particles=[];
+for(let i=0;i<100;i++){
+particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:2,speed:0.5});
+}
+
+function animate(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+particles.forEach(p=>{
+p.y+=p.speed;
+if(p.y>canvas.height)p.y=0;
+ctx.beginPath();
+ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+ctx.fillStyle="#22c55e";
+ctx.fill();
+});
+requestAnimationFrame(animate);
+}
+animate();
+</script>
+
+</body>
+</html>

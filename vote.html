@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<script type="module" src="auth.js"></script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vote - 3MatesCraft</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  font-family:Poppins;
+  background:#020617;
+  color:white;
+  overflow-x:hidden;
+}
+
+/* PARTICLES */
+canvas{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  z-index:-1;
+}
+
+/* NAV */
+.nav{
+  position:fixed;
+  width:100%;
+  top:0;
+  display:flex;
+  justify-content:center;
+  padding:15px;
+  backdrop-filter:blur(15px);
+  background:rgba(0,0,0,0.4);
+}
+
+.nav a{
+  color:white;
+  margin:0 15px;
+  text-decoration:none;
+  font-weight:700;
+  position:relative;
+  transition:0.3s;
+}
+
+.nav a:hover{
+  color:#22c55e;
+  text-shadow:0 0 10px #22c55e;
+}
+
+.nav a::after{
+  content:"";
+  position:absolute;
+  width:0%;
+  height:2px;
+  left:0;
+  bottom:-5px;
+  background:#22c55e;
+  transition:0.3s;
+}
+
+.nav a:hover::after{
+  width:100%;
+}
+
+/* CONTAINER */
+.container{
+  margin-top:100px;
+  text-align:center;
+  padding:20px;
+}
+
+/* ANIMATION */
+@keyframes riseFade{
+  from{opacity:0; transform:translateY(30px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+h1{
+  opacity:0;
+  animation:riseFade 1s ease forwards;
+}
+
+p{
+  opacity:0;
+  animation:riseFade 1s ease forwards 0.2s;
+}
+
+/* CARDS */
+.cards{
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:20px;
+  margin-top:30px;
+}
+
+.card{
+  background:rgba(15,23,42,0.7);
+  padding:20px;
+  border-radius:15px;
+  width:260px;
+  transition:0.3s;
+  opacity:0;
+  animation:riseFade 1s ease forwards;
+}
+
+.cards .card:nth-child(1){animation-delay:0.3s;}
+.cards .card:nth-child(2){animation-delay:0.5s;}
+.cards .card:nth-child(3){animation-delay:0.7s;}
+
+.card:hover{
+  transform:translateY(-10px);
+  box-shadow:0 0 25px #22c55e;
+}
+
+/* BUTTON */
+.btn{
+  margin-top:10px;
+  padding:10px 20px;
+  border:none;
+  border-radius:10px;
+  font-weight:600;
+}
+
+.btn.disabled{
+  background:#374151;
+  color:#9ca3af;
+  cursor:not-allowed;
+}
+
+/* REWARDS */
+.rewards{
+  margin-top:50px;
+  opacity:0;
+  animation:riseFade 1s ease forwards 0.9s;
+}
+
+.reward-box{
+  background:#0f172a;
+  padding:20px;
+  border-radius:15px;
+  display:inline-block;
+  margin-top:20px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- PARTICLES -->
+<canvas id="particles"></canvas>
+
+<!-- NAV -->
+<div class="nav">
+<a href="index.html">Home</a>
+<a href="store.html">Store</a>
+<a href="staff.html">Staff</a>
+<a href="media.html">Media</a>
+<a href="vote.html">Vote</a>
+<a href="rules.html">Rules</a>
+<a href="about.html">About</a>
+<a href="events.html">Events</a>
+<a href="apply.html">Apply</a>
+
+<button id="logoutBtn" onclick="logout()" style="margin-left:20px;padding:6px 12px;background:#22c55e;border:none;border-radius:6px;cursor:pointer;color:black;">
+Logout
+</button>
+
+</div>
+
+<!-- CONTENT -->
+<div class="container">
+
+<h1>🗳️ Vote for 3MatesCraft</h1>
+<p>Voting feature will be available soon 🚀</p>
+
+<div class="cards">
+
+<div class="card">
+<h3>Minecraft Server List</h3>
+<p>Coming Soon</p>
+<button class="btn disabled">Coming Soon</button>
+</div>
+
+<div class="card">
+<h3>TopG</h3>
+<p>Coming Soon</p>
+<button class="btn disabled">Coming Soon</button>
+</div>
+
+<div class="card">
+<h3>PlanetMinecraft</h3>
+<p>Coming Soon</p>
+<button class="btn disabled">Coming Soon</button>
+</div>
+
+</div>
+
+<!-- REWARDS -->
+<div class="rewards">
+<h2>🎁 Voting Rewards</h2>
+
+<div class="reward-box">
+<p>✨ 1 Vote = 100 Coins</p>
+<p>🔥 5 Streak = 200 Coins</p>
+<p>💎 More rewards coming soon</p>
+</div>
+</div>
+
+</div>
+
+<footer style="text-align:center;padding:20px;color:gray;">
+© 2026 3MatesCraft
+</footer>
+
+<!-- PARTICLES SCRIPT -->
+<script>
+const canvas = document.getElementById("particles");
+const ctx = canvas.getContext("2d");
+
+let particles=[];
+let w,h;
+
+function resize(){
+  w=canvas.width=window.innerWidth;
+  h=canvas.height=window.innerHeight;
+}
+resize();
+window.addEventListener("resize",resize);
+
+for(let i=0;i<80;i++){
+particles.push({
+x:Math.random()*w,
+y:Math.random()*h,
+r:Math.random()*2+1,
+speed:Math.random()*0.5+0.2,
+o:Math.random()
+});
+}
+
+function animate(){
+ctx.clearRect(0,0,w,h);
+
+particles.forEach(p=>{
+p.y+=p.speed;
+if(p.y>h){p.y=0;p.x=Math.random()*w;}
+
+ctx.beginPath();
+ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+ctx.fillStyle=`rgba(34,197,94,${p.o})`;
+ctx.fill();
+});
+
+requestAnimationFrame(animate);
+}
+animate();
+</script>
+
+</body>
+</html>
