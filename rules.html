@@ -44,15 +44,7 @@ canvas{
   color:white;
   margin:0 15px;
   text-decoration:none;
-  font-weight:600;
-  transition:0.3s;
-}
-
-.nav a{
-  color:white;
-  margin:0 15px;
-  text-decoration:none;
-  font-weight:700; /* BOLD */
+  font-weight:700;
   position:relative;
   transition:0.3s;
 }
@@ -63,7 +55,7 @@ canvas{
   text-shadow:0 0 10px #22c55e;
 }
 
-/* UNDERLINE ANIMATION */
+/* UNDERLINE */
 .nav a::after{
   content:"";
   position:absolute;
@@ -78,6 +70,62 @@ canvas{
 .nav a:hover::after{
   width:100%;
 }
+
+/* HAMBURGER (TOP LEFT) */
+.menu-btn{
+  display:none;
+  width:40px;
+  height:40px;
+  background:rgba(255,255,255,0.05);
+  border-radius:10px;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  gap:5px;
+  cursor:pointer;
+  position:absolute;
+  left:20px;
+  top:10px;
+}
+
+.menu-btn span{
+  width:18px;
+  height:2px;
+  background:white;
+  border-radius:2px;
+}
+
+/* MOBILE */
+@media (max-width:768px){
+
+  .nav{
+    justify-content:center;
+    padding-left:60px;
+  }
+
+  .nav a,
+  .nav button{
+    display:none;
+    width:100%;
+    margin:10px 0;
+    text-align:center;
+  }
+
+  .nav.active a,
+  .nav.active button{
+    display:block;
+  }
+
+  .menu-btn{
+    display:flex;
+  }
+
+  .nav.active{
+    flex-direction:column;
+    align-items:center;
+  }
+}
+
 /* CONTAINER */
 .container{
   margin-top:100px;
@@ -157,6 +205,14 @@ footer{
 
 <!-- NAV -->
 <div class="nav">
+
+<!-- HAMBURGER -->
+<div class="menu-btn" id="menuBtn">
+  <span></span>
+  <span></span>
+  <span></span>
+</div>
+
 <a href="index.html">Home</a>
 <a href="store.html">Store</a>
 <a href="staff.html">Staff</a>
@@ -167,10 +223,10 @@ footer{
 <a href="events.html">Events</a>
 <a href="apply.html">Apply</a>
 
-
 <button onclick="logout()" style="margin-left:20px;padding:6px 12px;background:#22c55e;border:none;border-radius:6px;cursor:pointer;color:black;">
 Logout
 </button>
+
 </div>
 
 <!-- CONTENT -->
@@ -178,7 +234,6 @@ Logout
 
 <h1>📜 3MatesCraft – Official Rules</h1>
 
-<!-- GAMEPLAY -->
 <div class="section">
 <div class="box">
 <h2>🛡️ Gameplay Rules</h2>
@@ -213,7 +268,6 @@ Logout
 </div>
 </div>
 
-<!-- CHAT -->
 <div class="section">
 <div class="box">
 <h2>💬 Chat Rules</h2>
@@ -232,7 +286,6 @@ Logout
 </div>
 </div>
 
-<!-- WARNING -->
 <div class="warning">
 ⚠️ Failure to follow these rules may result in warnings, mutes, bans, or permanent removal.
 <br><br>
@@ -245,8 +298,16 @@ Play fair, respect others, and enjoy your time on 3MatesCraft!
 © 2026 3MatesCraft
 </footer>
 
-<!-- PARTICLES SCRIPT -->
 <script>
+// HAMBURGER
+const menuBtn = document.getElementById("menuBtn");
+const nav = document.querySelector(".nav");
+
+menuBtn.onclick = () => {
+  nav.classList.toggle("active");
+};
+
+// PARTICLES
 const canvas = document.getElementById("particles");
 const ctx = canvas.getContext("2d");
 

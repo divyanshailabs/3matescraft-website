@@ -70,6 +70,61 @@ canvas{
   width:100%;
 }
 
+/* HAMBURGER (TOP LEFT) */
+.menu-btn{
+  display:none;
+  width:40px;
+  height:40px;
+  background:rgba(255,255,255,0.05);
+  border-radius:10px;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  gap:5px;
+  cursor:pointer;
+  position:absolute;
+  left:20px;
+  top:10px;
+}
+
+.menu-btn span{
+  width:18px;
+  height:2px;
+  background:white;
+  border-radius:2px;
+}
+
+/* MOBILE */
+@media (max-width:768px){
+
+  .nav{
+    justify-content:center;
+    padding-left:60px;
+  }
+
+  .nav a,
+  #logoutBtn{
+    display:none;
+    width:100%;
+    margin:10px 0;
+    text-align:center;
+  }
+
+  .nav.active a,
+  .nav.active #logoutBtn{
+    display:block;
+  }
+
+  .menu-btn{
+    display:flex;
+  }
+
+  .nav.active{
+    flex-direction:column;
+    align-items:center;
+  }
+}
+
 /* CONTAINER */
 .container{
   margin-top:100px;
@@ -160,6 +215,14 @@ p{
 
 <!-- NAV -->
 <div class="nav">
+
+<!-- HAMBURGER -->
+<div class="menu-btn" id="menuBtn">
+  <span></span>
+  <span></span>
+  <span></span>
+</div>
+
 <a href="index.html">Home</a>
 <a href="store.html">Store</a>
 <a href="staff.html">Staff</a>
@@ -204,7 +267,6 @@ Logout
 
 </div>
 
-<!-- REWARDS -->
 <div class="rewards">
 <h2>🎁 Voting Rewards</h2>
 
@@ -221,8 +283,16 @@ Logout
 © 2026 3MatesCraft
 </footer>
 
-<!-- PARTICLES SCRIPT -->
 <script>
+// HAMBURGER
+const menuBtn = document.getElementById("menuBtn");
+const nav = document.querySelector(".nav");
+
+menuBtn.onclick = () => {
+  nav.classList.toggle("active");
+};
+
+// PARTICLES
 const canvas = document.getElementById("particles");
 const ctx = canvas.getContext("2d");
 

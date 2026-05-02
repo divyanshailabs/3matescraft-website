@@ -24,13 +24,40 @@ left:0;
 z-index:-1;
 }
 
+/* NAV */
 .nav{
 display:flex;
 align-items:center;
 justify-content:space-between;
 padding:15px 30px;
+position:relative;
 }
 
+/* HAMBURGER */
+.menu-btn{
+display:none;
+width:40px;
+height:40px;
+background:rgba(255,255,255,0.05);
+border-radius:10px;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+gap:5px;
+cursor:pointer;
+position:absolute;
+left:20px;
+top:10px;
+}
+
+.menu-btn span{
+width:18px;
+height:2px;
+background:white;
+border-radius:2px;
+}
+
+/* NAV LINKS */
 .nav-links{
 display:flex;
 justify-content:center;
@@ -67,6 +94,37 @@ transition:0.3s;
 width:100%;
 }
 
+/* MOBILE */
+@media (max-width:768px){
+
+.nav{
+flex-direction:column;
+align-items:center;
+padding-left:60px;
+}
+
+.nav-links{
+display:none;
+flex-direction:column;
+width:100%;
+}
+
+.nav.active .nav-links{
+display:flex;
+}
+
+.nav a{
+margin:10px 0;
+text-align:center;
+}
+
+.menu-btn{
+display:flex;
+}
+
+}
+
+/* CONTENT */
 .container{
 margin-top:100px;
 text-align:center;
@@ -119,13 +177,11 @@ font-weight:600;
 transition:0.3s;
 }
 
-/* ACTIVE */
 .join-btn.active{
 background:#22c55e;
 color:black;
 }
 
-/* DISABLED */
 .join-btn.disabled{
 background:#374151;
 color:#9ca3af;
@@ -145,6 +201,14 @@ padding:20px;
 <canvas id="particles"></canvas>
 
 <div class="nav">
+
+<!-- HAMBURGER -->
+<div class="menu-btn" id="menuBtn">
+<span></span>
+<span></span>
+<span></span>
+</div>
+
 <div class="nav-links">
 <a href="index.html">Home</a>
 <a href="store.html">Store</a>
@@ -160,6 +224,7 @@ padding:20px;
 <button onclick="logout()" style="margin-left:20px;padding:6px 12px;background:#22c55e;border:none;border-radius:6px;cursor:pointer;color:black;">
 Logout
 </button>
+
 </div>
 
 <div class="container">
@@ -213,7 +278,15 @@ Logout
 <footer>© 2026 3MatesCraft</footer>
 
 <script>
-// COUNTDOWN + BUTTON CONTROL
+// HAMBURGER
+const menuBtn = document.getElementById("menuBtn");
+const nav = document.querySelector(".nav");
+
+menuBtn.onclick = () => {
+nav.classList.toggle("active");
+};
+
+// COUNTDOWN
 function startCountdown(elementId, buttonId, targetDate){
 const el = document.getElementById(elementId);
 const btn = document.getElementById(buttonId);
@@ -224,12 +297,9 @@ const distance = targetDate - now;
 
 if(distance <= 0){
 el.innerHTML = "🔥 Live Now";
-
-// Enable button
 btn.disabled = false;
 btn.classList.remove("disabled");
 btn.classList.add("active");
-
 return;
 }
 
@@ -244,11 +314,10 @@ update();
 setInterval(update, 60000);
 }
 
-// SET DATES
 startCountdown("pvpDate","pvpBtn", new Date(2026, 4, 20).getTime());
 startCountdown("buildDate","buildBtn", new Date(2026, 5, 20).getTime());
 
-// PARTICLES (unchanged)
+// PARTICLES
 const canvas=document.getElementById("particles");
 const ctx=canvas.getContext("2d");
 

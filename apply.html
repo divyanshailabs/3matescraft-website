@@ -66,6 +66,61 @@ transition:0.3s;
 width:100%;
 }
 
+/* HAMBURGER (TOP LEFT) */
+.menu-btn{
+display:none;
+width:40px;
+height:40px;
+background:rgba(255,255,255,0.05);
+border-radius:10px;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+gap:5px;
+cursor:pointer;
+position:absolute;
+left:20px;
+top:10px;
+}
+
+.menu-btn span{
+width:18px;
+height:2px;
+background:white;
+border-radius:2px;
+}
+
+/* MOBILE */
+@media (max-width:768px){
+
+.nav{
+justify-content:center;
+padding-left:60px;
+}
+
+.nav a,
+#logoutBtn{
+display:none;
+width:100%;
+margin:10px 0;
+text-align:center;
+}
+
+.nav.active a,
+.nav.active #logoutBtn{
+display:block;
+}
+
+.menu-btn{
+display:flex;
+}
+
+.nav.active{
+flex-direction:column;
+align-items:center;
+}
+}
+
 #logoutBtn{
 margin-left:20px;
 padding:6px 12px;
@@ -132,10 +187,17 @@ padding:20px;
 
 <body>
 
-<!-- ✅ PARTICLES BACKGROUND (RESTORED EXACTLY) -->
 <canvas id="particles"></canvas>
 
 <div class="nav">
+
+<!-- HAMBURGER -->
+<div class="menu-btn" id="menuBtn">
+<span></span>
+<span></span>
+<span></span>
+</div>
+
 <a href="index.html">Home</a>
 <a href="store.html">Store</a>
 <a href="staff.html">Staff</a>
@@ -149,13 +211,13 @@ padding:20px;
 <button id="logoutBtn" onclick="logout()" style="margin-left:20px;padding:6px 12px;background:#22c55e;border:none;border-radius:6px;cursor:pointer;color:black;">
 Logout
 </button>
+
 </div>
 
 <div class="container">
 
 <h1>🧑‍💻 Apply for Media or Staff</h1>
 
-<!-- STATUS SECTION (NOW PROPERLY USED) -->
 <div class="section" id="statusBox" style="display:none;">
 <h2>📊 Application Status</h2>
 <p id="statusText">Pending</p>
@@ -222,13 +284,11 @@ const db = getFirestore(app);
 
 const mediaFields = document.getElementById("mediaFields");
 
-// TOGGLE
 window.toggleMedia = function(){
 let type=document.getElementById("type").value;
 mediaFields.style.display = (type==="Media") ? "block" : "none";
 }
 
-// STATUS CHECK (FIXED + WORKING)
 window.checkStatus = async function(){
 
 let ign = document.getElementById("ign").value;
@@ -251,7 +311,6 @@ document.getElementById("statusBox").style.display = "block";
 document.getElementById("statusText").innerText = status;
 }
 
-// SUBMIT
 window.submitApp = async function(){
 
 let type = document.getElementById("type").value;
@@ -271,7 +330,6 @@ alert("Fill required fields!");
 return;
 }
 
-// SAVE
 await addDoc(collection(db,"applications"),{
 type, ign, discord, age, exp, expDetails,
 rules, reason, activity,
@@ -281,7 +339,6 @@ status:"pending",
 time:Date.now()
 });
 
-// DISCORD WEBHOOK (UNCHANGED)
 await fetch("https://discord.com/api/webhooks/1498905191322488842/Lx_O_WwVDg0OtD39kqVqv_2IznvFiUcZJRR6VL8XHOebS5_gzWlVbvgEImY3MiL8ObqO",{
 method:"POST",
 headers:{"Content-Type":"application/json"},
@@ -312,7 +369,15 @@ checkStatus();
 
 }
 
-// PARTICLES (RESTORED)
+// HAMBURGER
+const menuBtn = document.getElementById("menuBtn");
+const nav = document.querySelector(".nav");
+
+menuBtn.onclick = () => {
+nav.classList.toggle("active");
+};
+
+// PARTICLES
 const canvas = document.getElementById("particles");
 const ctx = canvas.getContext("2d");
 
